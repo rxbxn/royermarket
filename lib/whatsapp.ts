@@ -1,6 +1,6 @@
 import { Producto } from '@/types/producto'
 
-export function generateWhatsAppLink(producto: Producto, clientName?: string): string {
+export function generateWhatsAppLink(producto: Producto, talla?: string): string {
   // Clean phone number - remove spaces, dashes, and ensure it starts with country code
   const cleanPhone = producto.telefono.replace(/[\s\-\(\)]/g, '')
   
@@ -8,16 +8,21 @@ export function generateWhatsAppLink(producto: Producto, clientName?: string): s
   const lines = [
     'Hola, estoy interesado en el producto:',
     '',
+    `*Referencia:* ${producto.id}`,
     `*Nombre:* ${producto.nombre}`,
     `*Precio:* $${producto.precio.toLocaleString('es-CO', { minimumFractionDigits: 2 })}`,
   ]
+  
+  if (talla) {
+    lines.push(`*Talla:* ${talla}`)
+  }
   
   if (producto.descripcion) {
     lines.push(`*Descripción:* ${producto.descripcion}`)
   }
   
-  if (clientName) {
-    lines.push('', `Mi nombre es ${clientName}`)
+  if (producto.imagen_url) {
+    lines.push(`*Imagen:* ${convertGoogleDriveUrl(producto.imagen_url)}`)
   }
   
   const message = lines.join('\n')
