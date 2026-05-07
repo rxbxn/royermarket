@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { Producto } from '@/types/producto'
-import { generateWhatsAppLink } from '@/lib/whatsapp'
+import { generateWhatsAppLink, convertGoogleDriveUrl } from '@/lib/whatsapp'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -28,7 +28,7 @@ export function ProductCard({ producto }: ProductCardProps) {
       <div className="relative aspect-square overflow-hidden bg-muted">
         {producto.imagen_url && !imageError ? (
           <Image
-            src={producto.imagen_url}
+            src={convertGoogleDriveUrl(producto.imagen_url)}
             alt={producto.nombre}
             fill
             className="object-cover transition-transform group-hover:scale-105"
