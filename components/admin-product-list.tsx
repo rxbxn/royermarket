@@ -51,12 +51,15 @@ export function AdminProductList({ initialProducts }: AdminProductListProps) {
   const [productos, setProductos] = useState<Producto[]>(initialProducts)
   const [searchQuery, setSearchQuery] = useState('')
   const [deleting, setDeleting] = useState<string | null>(null)
-  
+
   // Edit state
   const [editingProduct, setEditingProduct] = useState<Producto | null>(null)
   const [editForm, setEditForm] = useState<ProductoInput | null>(null)
   const [editLoading, setEditLoading] = useState(false)
   const [editError, setEditError] = useState<string | null>(null)
+
+  // Estado para preview de imagen
+  const [previewImage, setPreviewImage] = useState<string | null>(null)
   
   useEffect(() => {
     setProductos(initialProducts)
@@ -221,13 +224,13 @@ export function AdminProductList({ initialProducts }: AdminProductListProps) {
                 {filteredProducts.map((producto) => (
                   <TableRow key={producto.id}>
                     <TableCell>
-                      <div className="relative h-10 w-10 overflow-hidden rounded bg-muted">
+                      <div className="relative h-10 w-10 overflow-hidden rounded bg-muted cursor-pointer group" onClick={() => producto.imagen_url && setPreviewImage(convertGoogleDriveUrl(producto.imagen_url))}>
                         {producto.imagen_url ? (
                           <Image
-                            src={producto.imagen_url}
+                            src={convertGoogleDriveUrl(producto.imagen_url)}
                             alt={producto.nombre}
                             fill
-                            className="object-cover"
+                            className="object-cover group-hover:opacity-80"
                             sizes="40px"
                           />
                         ) : (
@@ -237,6 +240,26 @@ export function AdminProductList({ initialProducts }: AdminProductListProps) {
                         )}
                       </div>
                     </TableCell>
+                          {/* Modal de preview de imagen */}
+                          <Dialog open={!!previewImage} onOpenChange={() => setPreviewImage(null)}>
+                            <DialogContent className="max-w-xl flex flex-col items-center">
+                              <DialogHeader>
+                                <DialogTitle>Vista previa de imagen</DialogTitle>
+                              </DialogHeader>
+                              {previewImage && (
+                                <div className="w-full flex justify-center">
+                                  <Image
+                                    src={previewImage}
+                                    alt="Vista previa"
+                                    width={400}
+                                    height={400}
+                                    className="rounded-lg object-contain bg-muted"
+                                    style={{ maxHeight: 400, maxWidth: '100%' }}
+                                  />
+                                </div>
+                              )}
+                            </DialogContent>
+                          </Dialog>
                     <TableCell>
                       <div>
                         <p className="font-medium">{producto.nombre}</p>
